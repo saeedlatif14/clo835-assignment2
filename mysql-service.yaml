@@ -1,0 +1,13 @@
+# mysql-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: db
+spec:
+  type: ClusterIP  # Internal service for MySQL
+  selector:
+    app: mysql     # Matches the MySQL deployment's pod labels
+  ports:
+    - port: 3306   # Service port
+      targetPort: 3306  # Matches the MySQL container port

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      imagePullSecrets:
+        - name: ecr-secret
+      containers:
+        - name: web
+          image: 997414430619.dkr.ecr.us-east-1.amazonaws.com/clo835-web-app:v1
+          ports:
+            - containerPort: 80
+          env:
+            - name: DBHOST       # Add these variables
+              value: "mysql.db.svc.cluster.local"  # MySQL service DNS name
+            - name: DBPORT
+              value: "3306"       # MySQL service port (as string)
+            - name: DBUSER
+              value: "root"
+            - name: DBPWD
+              value: "rootpassword"
+            - name: DBNAME
+              value: "employees"
+          # Add readiness probe (adjust path if needed)
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60  # Increase delay to allow the app to fully start
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 1

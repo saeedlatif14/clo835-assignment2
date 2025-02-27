@@ -1,0 +1,25 @@
+# kind-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:  # Add reservations for control-plane
+  - |
+    kind: KubeletConfiguration
+    systemReserved:
+      cpu: "500m"
+      memory: "1Gi"
+    evictionHard:
+      memory.available: "500Mi"
+  extraPortMappings:
+  - containerPort: 30000
+    hostPort: 30000
+- role: worker
+  kubeadmConfigPatches:
+  - |
+    kind: KubeletConfiguration
+    systemReserved:
+      cpu: "500m"
+      memory: "1Gi"
+    evictionHard:
+      memory.available: "500Mi"

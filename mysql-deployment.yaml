@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      initContainers:
+      - name: fix-permissions
+        image: busybox
+        command: ["sh", "-c", "chown -R 999:999 /var/lib/mysql"]
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+      containers:
+      - name: mysql
+        image: docker.io/library/mysql:8.0  # Updated to MySQL 8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "rootpassword"
+        - name: MYSQL_INNODB_BUFFER_POOL_SIZE
+          value: "64M"
+        - name: MYSQL_INNODB_LOG_FILE_SIZE
+          value: "32M"
+        - name: MYSQL_MAX_CONNECTIONS
+          value: "50"
+        - name: MYSQL_PERFORMANCE_SCHEMA
+          value: "OFF"
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+        resources:
+          requests:
+            memory: "3Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "1"
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+          initialDelaySeconds: 120
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+          initialDelaySeconds: 90
+          periodSeconds: 5
+      nodeSelector:
+        node-role.kubernetes.io/worker: ""
+      volumes:
+      - name: mysql-data
+        persistentVolumeClaim:
+          claimName: mysql-pvc
