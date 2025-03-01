@@ -9,6 +9,6 @@ spec:
     app: web
   ports:
     - protocol: TCP
-      port: 80        # Service port
-      targetPort: 8080  # Container port (should match Flask app)
-      nodePort: 30000 # Expose on port 30000
+      port: 80       
+      targetPort: 8080  
+      nodePort: 30000 

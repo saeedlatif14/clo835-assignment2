@@ -5,7 +5,7 @@ metadata:
   name: mysql-pvc
   namespace: db
 spec:
-  storageClassName: manual  # Match the PV's storage class
+  storageClassName: manual  
   accessModes:
     - ReadWriteOnce
   resources:

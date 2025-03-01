@@ -10,7 +10,7 @@ DBHOST = os.environ.get("DBHOST") or "localhost"
 DBUSER = os.environ.get("DBUSER") or "root"
 DBPWD = os.environ.get("DBPWD") or "password"  # Fixed typo in default password
 DATABASE = os.environ.get("DATABASE") or "employees"
-COLOR_FROM_ENV = os.environ.get('APP_COLOR') or "lime"
+COLOR_FROM_ENV = os.environ.get('APP_COLOR') or "blue"
 DBPORT = int(os.environ.get("DBPORT", "3306"))  # Default MySQL port is 3306
 
 # Create a connection to the MySQL database

@@ -19,9 +19,9 @@ spec:
         - name: web
           image: 997414430619.dkr.ecr.us-east-1.amazonaws.com/clo835-web-app:v1
           ports:
-            - containerPort: 80
+            - containerPort: 8080  
           env:
-            - name: DBHOST       # Add these variables
+            - name: DBHOST
               value: "mysql.db.svc.cluster.local"  # MySQL service DNS name
             - name: DBPORT
               value: "3306"       # MySQL service port (as string)
@@ -31,13 +31,15 @@ spec:
               value: "rootpassword"
             - name: DBNAME
               value: "employees"
-          # Add readiness probe (adjust path if needed)
+            - name: APP_COLOR
+              value: "pink"  
+          
           readinessProbe:
             httpGet:
-              path: /health
+              path: /
               port: 8080
               scheme: HTTP
-            initialDelaySeconds: 60  # Increase delay to allow the app to fully start
+            initialDelaySeconds: 60
             periodSeconds: 5
             successThreshold: 1
             failureThreshold: 3
